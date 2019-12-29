@@ -1,3 +1,4 @@
+{-#LANGUAGE ParallelListComp #-}
 {-#LANGUAGE ScopedTypeVariables#-}
 
 import Control.Monad
@@ -6,9 +7,22 @@ import Data.List.Utils
 import qualified Data.Set as Set
 import System.IO
 
-getCandidates :: Int -> String -> [String]
-getCandidates letterCount letters =
-  uniq $ (permutations letters) >>= ((filter (\a -> length a == letterCount)) . subsequences)
+data Pattern = Wildcard | Letter Char
+
+matchesPattern :: [Pattern] -> String -> Bool
+matchesPattern patterns letters
+  | length patterns /= length letters = False
+  | otherwise = and [matchesPatternOfSameLength p l | p <- patterns
+                                                    | l <- letters
+                                                    ]
+
+matchesPatternOfSameLength :: Pattern -> Char -> Bool
+matchesPatternOfSameLength Wildcard _ = True
+matchesPatternOfSameLength (Letter a) b = a == b
+
+getCandidates :: [Pattern] -> String -> [String]
+getCandidates letterPattern letters =
+  uniq $ (permutations letters) >>= ((filter (matchesPattern letterPattern)) . subsequences)
 
 loadDictionary :: String -> IO (Set.Set String)
 loadDictionary filename = do
@@ -24,6 +38,14 @@ getMatches filename candidates = do
 prettyPrint :: (Set.Set String) -> String
 prettyPrint set = foldr (\a b -> "  " ++ a ++ "\n" ++ b) "" (sort $ Set.toList set)
 
+parseLetterPattern :: String -> [Pattern]
+parseLetterPattern string =
+  map parseLetter (words string)
+
+parseLetter :: String -> Pattern
+parseLetter "*" = Wildcard
+parseLetter (s:_) = Letter s
+
 main = do
 
   dictionary <- loadDictionary "./wiktionary.txt"
@@ -31,10 +53,10 @@ main = do
   putStrLn "letters?"
   letters <- getLine
 
-  putStrLn "# of characters?"
-  letterCount :: Int <- readLn
+  putStrLn "character pattern (eg. * * e * *)?"
+  letterPattern <- fmap parseLetterPattern getLine
 
-  let candidates = Set.fromList $ getCandidates letterCount letters
+  let candidates = Set.fromList $ getCandidates letterPattern letters
 
   websterMatches <- getMatches "./dictionary.txt" candidates
   wiktionaryMatches <- getMatches "./wiktionary.txt" candidates
