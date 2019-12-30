@@ -1,7 +1,5 @@
 # Solver for Wordscapes game
 
-![](./screen.png)
-
 Running it:
 
 ```
