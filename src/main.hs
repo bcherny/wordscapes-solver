@@ -40,18 +40,18 @@ prettyPrint set = foldr (\a b -> "  " ++ a ++ "\n" ++ b) "" (sort $ Set.toList s
 
 parseLetterPattern :: String -> [Pattern]
 parseLetterPattern string =
-  parseLetter <$> words string
+  parseLetter <$> filter (\c -> c /= ' ') string
 
-parseLetter :: String -> Pattern
-parseLetter "*" = Wildcard
-parseLetter (a:_) = Letter a
+parseLetter :: Char -> Pattern
+parseLetter '.' = Wildcard
+parseLetter a = Letter a
 
 main = do
 
   putStrLn "letters?"
   letters <- getLine
 
-  putStrLn "character pattern (eg. * * e * *)?"
+  putStrLn "character pattern (eg. . . e . .)?"
   letterPattern <- parseLetterPattern <$> getLine
 
   let candidates = Set.fromList $ getCandidates letterPattern letters

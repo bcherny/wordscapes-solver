@@ -5,33 +5,36 @@ Running it:
 ```
 $ ./wordscapes-solver
 letters?
-minced
-character pattern (eg. * * e * *)?
-* * * * *
+dreeli
+character pattern (eg. . . e . .)?
+..de.
 
 Likely words:
-  denim
-  medic
-  mendi
-  mince
-  mined
+  eider
+  elder
+  elide
+  idler
+  riled
 
 Less likely words:
-  cinem
-  decin
-  demic
-  demin
-  denic
-  denim
-  dicen
-  dimen
-  enmic
-  indem
-  medic
-  medin
-  mendi
-  menic
-  minde
-  mined
-  nidec
+  deler
+  dlere
+  driel
+  edile
+  edler
+  eider
+  eiler
+  eldre
+  eleri
+  elide
+  ereli
+  idler
+  ieder
+  leder
+  leier
+  lider
+  redel
+  riede
+  riedl
+  riled
 ```
