@@ -40,31 +40,30 @@ prettyPrint set = foldr (\a b -> "  " ++ a ++ "\n" ++ b) "" (sort $ Set.toList s
 
 parseLetterPattern :: String -> [Pattern]
 parseLetterPattern string =
-  map parseLetter (words string)
+  parseLetter <$> words string
 
 parseLetter :: String -> Pattern
 parseLetter "*" = Wildcard
-parseLetter (s:_) = Letter s
+parseLetter (a:_) = Letter a
 
 main = do
-
-  dictionary <- loadDictionary "./wiktionary.txt"
 
   putStrLn "letters?"
   letters <- getLine
 
   putStrLn "character pattern (eg. * * e * *)?"
-  letterPattern <- fmap parseLetterPattern getLine
+  letterPattern <- parseLetterPattern <$> getLine
 
   let candidates = Set.fromList $ getCandidates letterPattern letters
 
+  topMatches <- getMatches "./top-full.txt" candidates
   websterMatches <- getMatches "./dictionary.txt" candidates
   wiktionaryMatches <- getMatches "./wiktionary.txt" candidates
 
-  let both = Set.intersection websterMatches wiktionaryMatches
+  let likely = Set.intersection topMatches websterMatches
+      top = Set.difference topMatches websterMatches
       wiki = Set.difference wiktionaryMatches websterMatches
       websters = Set.difference websterMatches wiktionaryMatches
 
-  putStrLn $ "\nWords from both dictionaries:\n" ++ (prettyPrint both)
-  putStrLn $ "Words from Webster:\n" ++ (prettyPrint websters)
-  putStrLn $ "Words from Wiktionary:\n" ++ (prettyPrint wiki)
+  putStrLn $ "\nLikely words:\n" ++ (prettyPrint likely)
+  putStrLn $ "Less likely words:\n" ++ (prettyPrint (websters <> wiki <> top))

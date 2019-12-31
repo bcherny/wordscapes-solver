@@ -1,1 +1,0 @@
-# wordscapes-solver

@@ -3,23 +3,35 @@
 Running it:
 
 ```
-stack ghci
-> :l main.hs
-> main
+$ ./wordscapes-solver
 letters?
-sstuer
-
+minced
 character pattern (eg. * * e * *)?
-r * * s * *
+* * * * *
 
-Words from both dictionaries:
-  russet
+Likely words:
+  denim
+  medic
+  mendi
+  mince
+  mined
 
-Words from Webster:
-
-Words from Wiktionary:
+Less likely words:
+  cinem
+  decin
+  demic
+  demin
+  denic
+  denim
+  dicen
+  dimen
+  enmic
+  indem
+  medic
+  medin
+  mendi
+  menic
+  minde
+  mined
+  nidec
 ```
-
-TODO:
-
-- Package it as an executable
